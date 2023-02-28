@@ -1,0 +1,352 @@
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="my-3 py-3">
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-green order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">200 Response</h6>
+                    <h2 class="text-right"><i class="bi bi-check-circle"></i><span>   {{http200Traces.length}}</span></h2>
+                    <p class="m-b-0">Updated:<span class="f-right" *ngIf="http200Traces.length>0"> {{http200Traces[0]?.timestamp | date:"dd MMM yyyy, HH:mm"}}</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-blue order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">404 Response</h6>
+                    <h2 class="text-right"><i class="bi bi-slash-circle"></i><span> {{http404Traces.length}}</span></h2>
+                    <p class="m-b-0">Updated:<span class="f-right" *ngIf="http404Traces.length>0"> {{http404Traces[0]?.timestamp | date:"dd MMM yyyy, HH:mm"}}</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-yellow order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">400 Response</h6>
+                    <h2 class="text-right"><i class="bi bi-exclamation-circle"></i><span> {{http400Traces.length}}</span></h2>
+                    <p class="m-b-0">Updated:<span class="f-right" *ngIf="http400Traces.length>0"> {{http400Traces[0]?.timestamp | date:"dd MMM yyyy, HH:mm"}}</span></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 col-xl-3">
+            <div class="card bg-c-pink order-card">
+                <div class="card-block">
+                    <h6 class="m-b-20">500 Response</h6>
+                    <h2 class="text-right"><i class="bi bi-bug"></i><span>     {{http500Traces.length}}</span></h2>
+                    <p class="m-b-0">Updated:<span class="f-right" *ngIf="http500Traces.length>0"> {{http500Traces[0]?.timestamp | date:"dd MMM yyyy, HH:mm"}}</span></p>
+                </div>
+            </div>
+        </div>
+	</div>
+</div>
+</div>
+
+<!-- Nav tabs -->
+<ul class="nav nav-tabs nav-fill">
+  <li class="nav-item">
+    <a class="nav-link " data-bs-toggle="tab" href="#httptarces"><strong>Http Traces</strong></a>
+  </li>
+  <li class="nav-item nav-fill ">
+    <a class="nav-link active" data-bs-toggle="tab" href="#signalements"><strong>Signalements</strong></a>
+  </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content ">
+  <div class="tab-pane container table-responsive" id="httptarces">
+    <label for="exampleFormControlTextarea1" class="form-label"></label>
+    <table  class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <!--<td  *ngFor="let title of fruits">{{title}}</td>-->
+          <th scope="col" class="text-center">Time Stamp</th>
+          <th scope="col" class="text-center">Method</th>
+          <th scope="col" class="text-center">Time Taken (ms)</th>
+          <th scope="col" class="text-center">Status</th>
+          <th scope="col" class="text-center">URI</th>
+        </tr>
+      </thead>
+      <tbody  class="tbody">
+        <tr *ngFor="let trace of traceList | paginate: { itemsPerPage: tableSizeT, currentPage: pageT, totalItems: countT }; let i=index "  class="tr">
+          <th scope="row">{{ i+1}}</th>
+          <td class="text-center">{{ trace.timestamp | date:"dd MMM yyyy, HH:mm:ss"}}</td>
+          <td class="text-center">{{ trace.request.method }}</td>
+          <td class="text-center">{{ trace.timeTaken }}</td>
+          <td class="text-center " [ngSwitch]="trace.response.status">
+            <span *ngSwitchCase="200" class="badge bg-success">{{ trace.response.status }}</span>
+            <span *ngSwitchCase="400" class="badge bg-warning">{{ trace.response.status }}</span>
+            <span *ngSwitchCase="404" class="badge bg-primary">{{ trace.response.status }}</span>
+            <span *ngSwitchCase="500" class="badge bg-danger">{{ trace.response.status }}</span>
+          </td>
+          <td class="text-center">{{ trace.request.uri }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div >
+      <pagination-controls 
+        previousLabel=""
+        nextLabel=""
+        (pageChange)="onTableDataChangeTraces($event)">
+      </pagination-controls>
+    </div>
+  </div>
+
+
+  <div class="tab-pane container active table-responsive" id="signalements">
+    <label for="exampleFormControlTextarea1" class="form-label"></label>
+    <table  class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" class="text-center">Date </th>
+          <th scope="col" class="text-center">NomFr</th>
+          <th scope="col" class="text-center">PrenomFr</th>
+          <th scope="col" class="text-center">NomAr</th>
+          <th scope="col" class="text-center">PrenomAr</th>
+          <th scope="col" class="text-center">Raison</th>
+          <th scope="col" class="text-center">Commentaire</th>
+          <th scope="col" class="text-center">Situation</th>
+          <th scope="col" class="text-center">Infos</th>
+        </tr>
+      </thead>
+      <tbody  class="tbody">
+        <tr *ngFor="let signal of signalerList | orderBy: ['situation', 'date'] | paginate: { itemsPerPage: tableSizeS, currentPage: pageS, totalItems: countS }; let i=index"  class="tr">
+          <th scope="row" >{{ i+1}}</th>
+          <td class="text-center" >{{ signal.date | date:"dd MMM yyyy, HH:mm:ss"}}</td>
+          <td class="text-center">
+            <span *ngIf="signal.nomFr; else templateName"><i class="bi bi-exclamation-square-fill text-danger"></i></span>
+          </td>
+          <td class="text-center">
+            <span *ngIf="signal.prenomFr; else templateName"><i class="bi bi-exclamation-square-fill text-danger"></i></span>
+          </td>
+          <td class="text-center">
+            <span *ngIf="signal.nomAr; else templateName"><i class="bi bi-exclamation-square-fill text-danger"></i></span>
+          </td>
+          <td class="text-center">
+            <span *ngIf="signal.prenomAr; else templateName"><i class="bi bi-exclamation-square-fill text-danger"></i></span>
+          </td>
+          <td class="text-center" >{{ signal.raison }}</td>
+          <td class="text-center">{{ signal.commentaire }}</td>
+          <td class="text-center align-middle">
+            <span *ngIf="signal.situation" ><i class="bi bi-check-circle-fill text-success "></i></span>
+            <span *ngIf="!signal.situation" ><i class="bi bi-x-circle-fill text-danger"></i></span>
+          </td>
+          <td class="td  align-self-center">
+            <button  class="btn" (click)="send(signal)" data-bs-toggle="modal" data-bs-target="#infosModal" >
+                <i class="bi bi-info-circle text-primary "></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div >
+      <pagination-controls 
+        previousLabel=""
+        nextLabel=""
+        (pageChange)="onTableDataChangeSignaler($event)">
+      </pagination-controls>
+    </div>
+  </div>
+</div>
+
+<ng-template #templateName>
+  <span ><i class="bi bi-square text-danger"></i></span>
+</ng-template>
+<ng-template #templateSupprimer>
+  <p class="text-muted">[supprimer]</p>
+</ng-template>
+<ng-template #templateEditDisabled>
+  <button class="btn border-0" disabled><i class="bi bi-pencil-square text-primary"></i></button>
+</ng-template>
+<ng-template #templateDeleteDisabled>
+  <button class="btn border-0" disabled><i class="bi bi-trash text-danger"></i></button>
+</ng-template>
+
+<!-- Modal -->
+<div class="modal fade" id="infosModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Informations</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-3 ">Nom :</div>
+            <div class="col-5 "><span *ngIf="nom!=null; else templateSupprimer">{{nom.nomFr}}</span></div>
+            <div class="col-2 mt-1"><span *ngIf="signaler?.nomFr; else templateName" ><i class="bi bi-exclamation-square-fill text-danger"></i></span></div>
+            <div class="col-1 "><span *ngIf="nom!=null; else templateEditDisabled"><button class="btn" data-bs-toggle="modal" data-bs-target="#editNomModal"><i class="bi bi-pencil-square text-primary "></i></button></span></div>
+            <div class="col-1"><span *ngIf="nom!=null; else templateDeleteDisabled"><button class="btn" data-bs-toggle="modal" data-bs-target="#deleteNomModal"><i class="bi bi-trash text-danger"></i></button></span></div>
+          </div>
+          <div class="row">
+            <div class="col-3">اللقب :</div>
+            <div class="col-5"><span *ngIf="nom!=null; else templateSupprimer">{{nom.nomAr}}</span></div>
+            <div class="col-2 mt-1"><span *ngIf="signaler?.nomAr; else templateName"><i class="bi bi-exclamation-square-fill text-danger"></i></span></div>
+            <div class="col-1"><span *ngIf="nom!=null; else templateEditDisabled"><button class="btn" data-bs-toggle="modal" data-bs-target="#editNomModal"><i class="bi bi-pencil-square text-primary"></i></button></span></div>
+            <div class="col-1"><span *ngIf="nom!=null; else templateDeleteDisabled"><button class="btn" data-bs-toggle="modal" data-bs-target="#deleteNomModal"><i class="bi bi-trash text-danger"></i></button></span></div>
+          </div>
+          <div class="row">
+            <div class="col-3">Prenom :</div>
+            <div class="col-5"><span *ngIf="prenom!=null; else templateSupprimer">{{prenom.prenomFr}}</span> </div>
+            <div class="col-2 mt-1"><span *ngIf="signaler?.prenomFr; else templateName"><i class="bi bi-exclamation-square-fill text-danger"></i></span></div>
+            <div class="col-1"><span *ngIf="prenom!=null; else templateEditDisabled"><button class="btn" data-bs-toggle="modal" data-bs-target="#editPrenomModal"><i class="bi bi-pencil-square text-primary"></i></button></span></div>
+            <div class="col-1"><span *ngIf="prenom!=null; else templateDeleteDisabled"><button class="btn" data-bs-toggle="modal" data-bs-target="#deletePrenomModal"><i class="bi bi-trash text-danger"></i></button></span></div>
+          </div>
+          <div class="row">
+            <div class="col-3">الإسم :</div>
+            <div class="col-5"><span *ngIf="prenom!=null; else templateSupprimer">{{prenom.prenomAr}}</span></div>
+            <div class="col-2 mt-1"><span *ngIf="signaler?.prenomAr; else templateName"><i class="bi bi-exclamation-square-fill text-danger"></i></span></div>
+            <div class="col-1"><span *ngIf="prenom!=null; else templateEditDisabled"><button class="btn" data-bs-toggle="modal" data-bs-target="#editPrenomModal"><i class="bi bi-pencil-square text-primary"></i></button></span></div>
+            <div class="col-1"><span *ngIf="prenom!=null; else templateDeleteDisabled"><button class="btn" data-bs-toggle="modal" data-bs-target="#deletePrenomModal"><i class="bi bi-trash text-danger"></i></button></span></div>
+          </div>
+          <div class="row py-1">
+            <div class="col-3">Genre :</div>
+            <div class="col-5"><span *ngIf="prenom!=null ; else templateSupprimer" [ngSwitch]="prenom.genre">
+              <span *ngSwitchCase="'M'">Mâle</span>
+              <span *ngSwitchCase="'F'">Femelle</span>
+              <span *ngSwitchCase="'B'">Les deux</span>
+            </span></div>
+          </div>
+          <div class="row py-1">
+            <div class="col-3">Raison :</div>
+            <div class="col-9 ">{{signaler?.raison}}</div>
+          </div>
+          <div class="row py-1">
+            <div class="col-3">Commentaire:</div>
+            <div class="col-9">{{signaler?.commentaire}}</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+        <button type="button" (click)="onSaveSituation(signaler!)" class="btn btn-primary" data-bs-dismiss="modal">Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+ </div>
+<!-- Delete Nom Modal -->
+ <div class="modal fade" id="deleteNomModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Suppression</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <p>
+      <strong>Êtes-vous sûr de vouloir supprimer <span class="text-primary">{{nom?.nomFr}} | {{nom?.nomAr}}</span> de la base de donnée?</strong>
+    </p>
+    <p>
+      Toutes les informations associées à ce nom seront définitivement supprimées.
+      <span class="text-danger">Cette opération ne peut pas être annulée.</span>
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-dismiss="modal">Annuler</button>
+    <button type="button" ngbAutofocus class="btn btn-danger" (click)="onDeleteNom(nom!,signaler!)" data-bs-target="#infosModal" data-bs-toggle="modal" data-bs-dismiss="modal">Supprimer</button>
+  </div>
+ </div>
+</div>
+</div>
+<!-- Delete Prenom Modal -->
+<div class="modal fade" id="deletePrenomModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-title">Suppression</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <p>
+      <strong>Êtes-vous sûr de vouloir supprimer <span class="text-primary">{{prenom?.prenomFr}} | {{prenom?.prenomAr}}</span> de la base de donnée?</strong>
+    </p>
+    <p>
+      Toutes les informations associées à ce prenom seront définitivement supprimées.
+      <span class="text-danger">Cette opération ne peut pas être annulée.</span>
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-dismiss="modal">Annuler</button>
+    <button type="button" ngbAutofocus class="btn btn-danger" (click)="onDeletePrenom(prenom!,signaler!)" data-bs-target="#infosModal" data-bs-toggle="modal" data-bs-dismiss="modal">Supprimer</button>
+  </div>
+ </div>
+</div>
+</div>
+
+<!-- Nom Modal -->
+<div class="modal fade" id="editNomModal" tabindex="-1" aria-labelledby="nomModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateEmployeeModalLabel">Modifier le nom [{{nom?.nomFr}} | {{nom?.nomAr}}]</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <form #nomForm="ngForm">
+        <input type="hidden" ngModel="{{nom?.id}}" name="id" class="form-control" id="id" >
+          <div class="mb-3">
+              <label class="form-label">Nom en français</label>
+              <input type="text" ngModel="{{nom?.nomFr}}" name="nomFr" class="form-control" id="nomFr" #nomFr="ngModel" ngModel required pattern="[a-zA-Z àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ]+$">
+              <div [hidden]="nomFr.valid || nomFr.pristine" class="text-danger">Doit contenir que des caractères français</div>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Nom en arabe</label>
+              <input type="text" ngModel="{{nom?.nomAr}}" name="nomAr" class="form-control" id="nomAr" #nomAr="ngModel" required pattern="[گچپژیلفقهمو ء-ي]+$">
+              <div [hidden]="nomAr.valid || nomAr.pristine" class="text-danger">Doit contenir que des caractères arabes</div>
+          </div>
+      
+      <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button [disabled]="nomForm.invalid" (click)="onEditNom(nomForm.value,signaler!)" type="submit" class="btn btn-primary" data-bs-target="#infosModal" data-bs-toggle="modal" data-bs-dismiss="modal">Sauvegarder</button>
+      </div>
+      </form>
+  </div>
+  </div>
+</div>
+</div>
+<!-- Prenom Modal -->
+<div class="modal fade" id="editPrenomModal" tabindex="-1" aria-labelledby="nomModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateEmployeeModalLabel">Modifier Prenom [{{prenom?.prenomFr}} | {{prenom?.prenomFr}}]</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form #prenomForm="ngForm">
+          <input type="hidden" ngModel="{{prenom?.id}}" name="id" class="form-control" id="id" >
+          <div class="mb-3">
+              <label class="form-label">Prenom en français</label>
+              <input type="text" ngModel="{{prenom?.prenomFr}}" name="prenomFr" class="form-control" id="prenomFr" #prenomFr="ngModel" required pattern="[a-zA-Z àâäèéêëîïôœùûüÿçÀÂÄÈÉÊËÎÏÔŒÙÛÜŸÇ]+$">
+              <div [hidden]="prenomFr.valid || prenomFr.pristine" class="text-danger">Doit contenir que des caractères français</div>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Prenom en arabe</label>
+              <input type="text" ngModel="{{prenom?.prenomAr}}" name="prenomAr" class="form-control" id="prenomAr" #prenomAr="ngModel" required pattern="[گچپژیلفقهمو ء-ي]+$">
+              <div [hidden]="prenomAr.valid || prenomAr.pristine" class="text-danger">Doit contenir que des caractères français</div>
+          </div>
+          <div class="mb-3">
+              <label class="form-label">Genre</label>
+              <select class="form-select"  name="genre"  ngModel="{{prenom?.genre}}" id="genre"  required>
+              <option value="B">Les deux</option>
+              <option value="M">Mâle</option>
+              <option value="F">Femelle</option>
+              </select>
+          </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button [disabled]="prenomForm.invalid" (click)="onEditPrenom(prenomForm.value,signaler!)" type="submit" class="btn btn-primary" data-bs-target="#infosModal" data-bs-toggle="modal" data-bs-dismiss="modal">Sauvegarder</button>
+        </div>
+        </form>
+    </div>
+  </div>
+</div>
+</div>
+
